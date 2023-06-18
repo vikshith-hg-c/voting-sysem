@@ -1,6 +1,3 @@
 # VIB
 Solidity Voting 
 
-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
-
-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

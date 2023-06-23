@@ -5,6 +5,7 @@ contract election{
 
     address ADMIN;
     bool electionActive = false;
+    bool electionClosed = false;
     address[] candidateAddress;
     address public winner;
 
@@ -42,6 +43,7 @@ contract election{
     }
 
     function endElection() external _isAdmin {
+        electionClosed = true;
         electionActive = false;
     }
 
@@ -49,7 +51,7 @@ contract election{
         return(candidates[_UID].UID,candidates[_UID].name,candidates[_UID].voteCount);
     }
 
-    function getWinner() external _isAdmin  {
+    function getWinner() external _isAdmin _checkElectionClosed {
         uint _winnerVotes = 0 ;
         address _winnerAddress;
         for(uint i =0; i< candidateAddress.length; i++){
@@ -109,24 +111,31 @@ contract election{
 
 
     modifier _checkVotePower {
-        require(voters[msg.sender].votingPowerCount > 0);
+        require(voters[msg.sender].votingPowerCount > 0,"Already Voted");
         _;
     }
 
     modifier _checkDeligation(address _deligatorAddresss,address _voterAddress) {
-        require(deligatedAddress[_deligatorAddresss] == _voterAddress);
+        require(deligatedAddress[_deligatorAddresss] == _voterAddress,"access denied");
         _;
     }
 
     modifier _isAdmin {
-        require(msg.sender == ADMIN);
+        require(msg.sender == ADMIN, "Access Denied");
         _;
     } 
 
     modifier _isElectionON {
-        require(electionActive == true);
+        require(electionActive == true,"NO Ongoing Election");
         _;
     }
+
+    modifier _checkElectionClosed {
+        require(electionClosed == true, "Election has not closed");
+        _;
+    }
+
+
     
 
 

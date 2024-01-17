@@ -1,5 +1,5 @@
 # VIB
 Solidity Voting 
 
-final
+
 
